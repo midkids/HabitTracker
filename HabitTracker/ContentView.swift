@@ -7,104 +7,7 @@
 
 import SwiftUI
 
-// /*
-// Using @State with classes
-// Sharing SwiftUI state with @Observable
-//
-// @Observable
-class User {
-    var firstName = "Bilbo"
-    var lastName = "Baggins"
-}
 
-struct ContentView: View {
-
-    @State private var user = User()
-    
-    var body: some View {
-        VStack {
-            Text("Your name is \(user.firstName) \(user.lastName)")
-            // Overtyping "Bilbo" with "Frodo" in the TextField
-            // will change firstName in the Text view when the
-            // User is a Struct
-            // It will not change the Text view when the
-            // User is a Class until we add the @Observable macro
-            TextField("First name", text: $user.firstName)
-            TextField("Last name", text: $user.lastName)
-        }
-        .padding()
-    }
-}
-// */
-
-/*
-// Showing and hiding views
-//
-// Will show this second view via sheet
-// Can drag this view away
-struct SecondView: View {
-    @Environment(\.dismiss) var dismiss
-    let name: String
-    var body: some View {
-        Text("Hello, \(name)!")
-        Button("Dismiss") {
-            dismiss()
-        }
-    }
-}
-
-struct ContentView: View {
-    @State private var showingSecondSheet = false
-    var body: some View {
-        Button("Show Second Sheet") {
-            showingSecondSheet.toggle()
-        }
-        // attach our second sheet into our
-        // current view hierarchy
-        .sheet(isPresented: $showingSecondSheet) {
-            SecondView(name: "Fred")
-        }
-    }
-}
-*/
-
-/*
-// Deleting items using onDelete()
-//
-struct ContentView: View {
-    @State private var numbers = [Int]()
-    @State private var currentNumber = 1
-    var body: some View {
-        NavigationStack {
-            VStack {
-                List {
-                    // Only dynamic rows in a list are deletable
-                    ForEach(numbers, id: \.self) {
-                        Text("Row \($0)")
-                    }
-                    // user must swipe from right to left
-                    // to delete a row
-                    .onDelete(perform: removeRows)
-                }
-                Button("Add number") {
-                    numbers.append(currentNumber)
-                    currentNumber += 1
-                }
-            }
-            // Allows deletion of muliple rows
-            // EditButton will automatically switch
-            //   between Edit and Done when tapped
-            .toolbar {
-                EditButton()
-            }
-        }
-    }
-    
-    func removeRows(at offsets: IndexSet) {
-        numbers.remove(atOffsets: offsets)
-    }
-}
- */
 
 /*
 // Storing user settings with UserDefaults
@@ -158,7 +61,7 @@ struct ContentView: View {
         }
     }
 }
-*/
+ */
 
 /*
 // Archiving Swift objects with Codable
@@ -200,7 +103,7 @@ struct ContentView: View {
 }
 */
 
-/*
+
 // The actual iExpense project
 // - Building a list we can delete from
 // - Working with identifiable items in SwiftUI
@@ -352,7 +255,7 @@ struct ContentView: View {
         expenses.items.remove(atOffsets: offsets)
     }
 }
-*/
+
 
 #Preview {
     ContentView()

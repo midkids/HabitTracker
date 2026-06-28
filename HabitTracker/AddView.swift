@@ -4,7 +4,7 @@
 //
 //  Created by Myron Snelson on 6/27/26.
 //
-/*
+
  import SwiftUI
  
  struct AddView: View {
@@ -92,4 +92,4 @@
  // it is just for preview purposes
  AddView(expenses: Expenses())
  }
- */
+
