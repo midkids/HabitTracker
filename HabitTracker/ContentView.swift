@@ -117,12 +117,12 @@ struct ContentView: View {
 // the struct unique
 // IMPORTANT: the JSON encoder can only be used
 //   to encode objects that conform to the
-//   Codeable protocol - added Codeable to ExpenseItem struct
+//   Codeable protocol - added Codeable to HabitItem struct
 // If we add Codable conformance to a type,
 //   Swift can generate archiving and unarchiving code for us.
 // This only works if all the properties inside the type also conform to Codable
 // UUID already conforms to Codable
-struct ExpenseItem: Identifiable, Codable {
+struct HabitItem: Identifiable, Codable {
     // This will make a unique id for every entry in the array
     // Had to make id a var to get rid of warning
     // saying it will not be decoded because it has
@@ -131,25 +131,25 @@ struct ExpenseItem: Identifiable, Codable {
     // SwiftUI is just trying to be helpful in case
     // you did want to make this oject work with JSON
     var id = UUID()
-    let name: String
-    let type: String
-    let amount: Double
+    let title: String
+    let description: String
+    let number: Int
 }
 
-// Clases the use the observable protocol,
+// Classes with the observable protocol
 //  can be used in more than one SwiftUI view
 //  and all of those views will be updated
 //  when the relevant properties of the object changes
 @Observable
-class Expenses {
-    var items = [ExpenseItem]() {
+class Habits {
+    var items = [HabitItem]() {
         didSet {
             // To correctly save our items correctly:
             // 1) make a JSON encoder
             // 2) encode the items variable
             // IMPORTANT: this encoder can only be used
             //   to encode objects that conform to the
-            //   Codeable protocol - added Codeable to ExpenseItem struct
+            //   Codeable protocol - added Codeable to HabitItem struct
             if let encoded = try? JSONEncoder().encode(items) {
                 UserDefaults.standard.set(encoded, forKey: "Items")
             }
@@ -160,14 +160,14 @@ class Expenses {
         // To load our items correctly:
         // 1) check to see if UserDefaults is there for key "Items"
         // 2) if it is there, try to decode the UserDefaults data
-        //    into an array of ExpenseItems
+        //    into an array of HabitItems
         //    The .self is needed because SwiftUI needs to know
-        //    we are referring to the type ExpenseItem itself
-        //    That is, give me an array of ExpenseItems as a type
+        //    we are referring to the type HabitItem itself
+        //    That is, give me an array of HabitItems as a type
         // 3) store the loaded data into items property of
-        //    the Expenses class
+        //    the Habits class
         if let savedItems = UserDefaults.standard.data(forKey: "Items") {
-            if let decodedItems = try? JSONDecoder().decode([ExpenseItem].self, from: savedItems) {
+            if let decodedItems = try? JSONDecoder().decode([HabitItem].self, from: savedItems) {
                 items = decodedItems
                 return
             }
@@ -184,7 +184,7 @@ struct ContentView: View {
     //   and notifies SwiftUI views to update themselves
     // IMPORTANT: Both the ContentView and the AddView
     //   will share the same list of expense items
-    @State private var expenses = Expenses()
+    @State private var habits = Habits()
     
     var body: some View {
         NavigationStack {
@@ -194,55 +194,52 @@ struct ContentView: View {
             // so it can tell what view has changed
             // when the data changes
             List {
-                // Could cause problems if name is not unique
+                // Could cause problems if title is not unique
                 // It works in this case because we are deleting
                 // a single specific row, one at a time
                 // But many other cases, that extra information
                 // will not be present causing our app to
                 // behave strangely
-                // ForEach(expenses.items, id: \.name) {item in
+                // ForEach(habits.items, id: \.title) {item in
                 
                 // Here is the fix because id will always
                 // be unique
-                // ForEach(expenses.items, id: \.id) {item in
+                // ForEach(habits.items, id: \.id) {item in
                 
                 // After adding Identifiable protocol
-                // to the ExpenseItem struct,
+                // to the HabitItem struct,
                 // we no longer need to have an id in
                 // our ForEach
-                ForEach(expenses.items) {item in
+                ForEach(habits.items) {item in
                     // Very common layout
                     // Title and subtitle on left
                     // More information on right
                     HStack {
                         VStack(alignment: .leading) {
-                            Text(item.name)
+                            Text(item.title)
                                 .font(.headline)
-                            Text(item.type)
+                            Text(item.description)
+                            Text("Number: \(item.number)")
                         }
-                        // Spacer below VStack
-                        // Pushes the rest of the view to the right
-                        Spacer()
-                        Text(item.amount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
-                            .foregroundStyle(item.amount <= 10 ? .green : (item.amount >= 11 && item.amount <= 99 ? .yellow : .red))
+                        
                     }
                 }
                 // The onDelete modifier exists only on ForEach
                 // allows swipe left to delete an item
                 .onDelete(perform: removeItems)
             }
-            .navigationTitle("iExpense")
-            // Add expenses by navigating to the AddView.
+            .navigationTitle("HabitTracker")
+            // Add habits by navigating to the AddView.
             .toolbar {
                 NavigationLink {
-                    // Here we are sharing the expenses object
+                    // Here we are sharing the habits object
                     // from the ContentView with the AddView
                     // IMPORTANT: Both views will share the same
                     // observable class
                     // RESULT: both view will watch for changes
-                    AddView(expenses: expenses)
+                    AddView(habits: habits)
                 } label: {
-                    Label("Add Expense", systemImage: "plus")
+                    Label("Add Habit", systemImage: "plus")
                 }
             }
         }
@@ -252,7 +249,7 @@ struct ContentView: View {
     // It is used for deleting views from a ForEach view
     //   amongst other things
     func removeItems(at offsets: IndexSet) {
-        expenses.items.remove(atOffsets: offsets)
+        habits.items.remove(atOffsets: offsets)
     }
 }
 

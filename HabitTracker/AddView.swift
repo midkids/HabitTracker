@@ -32,44 +32,36 @@
  //   to dismiss the AddView view
  @Environment(\.dismiss) var dismiss
  
- @State private var name = ""
- @State private var type = "Personal"
- @State private var amount = 0.0
+ @State private var title = ""
+ @State private var description = ""
+ @State private var number = 0
  
  // The AddView expects to be made with
- // an Expenses object that is shared with it
+ // an Habits object that is shared with it
  // upon instantiation
  // IMPORTANT: Both views will share the same
  // observable class
  // (made observable in ContentView)
  // RESULT: both view will watch for changes
  // IMPORTANT: Both the ContentView and the AddView
- //   will share the same list of expense items
- var expenses: Expenses
- 
- let types = ["Personal", "Business"]
- 
+ //   will share the same list of habit items
+ var habits: Habits
  
  var body: some View {
  Form {
- TextField("Name", text: $name)
- Picker("Type", selection: $type) {
- ForEach(types, id: \.self) {
- Text($0)
- }
- }
- TextField("Amount", value: $amount,
- format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+ TextField("Title", text: $title)
+ TextField("Description", text: $description)
+ Text("Number \(number)")
  .keyboardType(.decimalPad)
  }
- .navigationTitle("Add new expense")
+ .navigationTitle("Add new habit")
  .toolbar {
  // Added tool bar items to allow
  // save or cancel
  ToolbarItem(placement: .confirmationAction) {
  Button("Save") {
- let item = ExpenseItem(name: name, type: type, amount: amount)
- expenses.items.append(item)
+ let item = HabitItem(title: title, description: description, number: number)
+ habits.items.append(item)
  // Returns to the expense list after saving.
  dismiss()
  }
@@ -90,6 +82,6 @@
  // Our expenses will be a new Expenses object
  // That works because:
  // it is just for preview purposes
- AddView(expenses: Expenses())
+ AddView(habits: Habits())
  }
 
