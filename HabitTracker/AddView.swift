@@ -34,7 +34,7 @@
  
  @State private var title = ""
  @State private var description = ""
- @State private var number = 0
+ @State private var streak = 0
  
  // The AddView expects to be made with
  // an Habits object that is shared with it
@@ -51,7 +51,7 @@
  Form {
  TextField("Title", text: $title)
  TextField("Description", text: $description)
- Text("Number \(number)")
+ // Text("Streak \(streak)")
  .keyboardType(.decimalPad)
  }
  .navigationTitle("Add new habit")
@@ -60,7 +60,7 @@
  // save or cancel
  ToolbarItem(placement: .confirmationAction) {
  Button("Save") {
- let item = HabitItem(title: title, description: description, number: number)
+ let item = HabitItem(title: title, description: description, streak: streak)
  habits.items.append(item)
  // Returns to the expense list after saving.
  dismiss()

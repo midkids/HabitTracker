@@ -133,7 +133,7 @@ struct HabitItem: Identifiable, Codable {
     var id = UUID()
     let title: String
     let description: String
-    let number: Int
+    var streak: Int
 }
 
 // Classes with the observable protocol
@@ -214,15 +214,39 @@ struct ContentView: View {
                     // Very common layout
                     // Title and subtitle on left
                     // More information on right
-                    HStack {
                         VStack(alignment: .leading) {
-                            Text(item.title)
-                                .font(.headline)
-                            Text(item.description)
-                            Text("Number: \(item.number)")
+                            HStack {
+                                Text("Habit:")
+                                    .font(.headline)
+                                Text(item.title)
+                                //                            Text(item.description)
+                                Spacer()
+                                Text("Streak:")
+                                    .font(.headline)
+                                Text("\(item.streak)")
+                                Spacer()
+                                Button("+") {
+                                    // This line finds the real habit
+                                    //  inside the habits.items array.
+                                    // Because each HabitItem has a unique
+                                    //  id, this finds the correct array
+                                    //  position
+                                    // firstIndex(where:) looks through each
+                                    //  element in habits.items. For each
+                                    //  HabitItem, Swift runs the closure.
+                                    //  So $0.id means “the id of the habit
+                                    // currently being checked.”
+                                    if let index = habits.items.firstIndex(where: { $0.id == item.id }) {
+                                        habits.items[index].streak += 1
+                                    }
+                                }
+                                // This modifier to NOT use the default
+                                // behavior of a button in a list
+                                // (default: user can tap anywhere in row
+                                // to activate button behavior)
+                                .buttonStyle(.bordered)
+                            }
                         }
-                        
-                    }
                 }
                 // The onDelete modifier exists only on ForEach
                 // allows swipe left to delete an item
